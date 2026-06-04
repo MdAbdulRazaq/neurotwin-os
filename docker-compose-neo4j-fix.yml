@@ -1,0 +1,23 @@
+  neo4j:
+    image: neo4j:5-community
+    container_name: neurotwin-neo4j
+    restart: unless-stopped
+    ports: ["7474:7474", "7687:7687"]
+    environment:
+      NEO4J_AUTH: neo4j/neurotwin_password
+      NEO4J_dbms_memory_heap_initial__size: 256m
+      NEO4J_dbms_memory_heap_max__size: 512m
+    volumes:
+      - neo4j_data:/data
+    healthcheck:
+      # Simple HTTP GET to bolt info endpoint. Returns 200 when ready.
+      # Retries every 10s for up to 30 times (300s total) after 120s startup delay
+      test: ["CMD", "curl", "-s", "-f", "http://localhost:7474/", "-o", "/dev/null"]
+      interval: 10s
+      timeout: 3s
+      retries: 30
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          memory: 1G

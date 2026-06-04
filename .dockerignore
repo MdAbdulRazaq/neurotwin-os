@@ -1,0 +1,52 @@
+# Exclude everything by default, then whitelist what Docker needs
+**
+
+# Allow services/common (needed by memory, avatar, worker)
+!services/common/
+!services/common/**
+
+# Allow each service directory
+!services/memory/
+!services/memory/**
+!services/avatar/
+!services/avatar/**
+!services/worker/
+!services/worker/**
+!services/api/
+!services/api/**
+!services/action/
+!services/action/**
+!services/agents/
+!services/agents/**
+!services/behavior/
+!services/behavior/**
+!services/cognition/
+!services/cognition/**
+!services/codereview/
+!services/codereview/**
+!services/digital_twin/
+!services/digital_twin/**
+!services/orchestrator/
+!services/orchestrator/**
+!services/perception/
+!services/perception/**
+!services/prediction/
+!services/prediction/**
+!services/voice/
+!services/voice/**
+!services/visual-identity/
+!services/visual-identity/**
+!web/
+!web/**
+
+# Exclude node_modules and build artifacts even inside allowed dirs
+**/node_modules
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.venv
+**/venv
+**/.git
+**/dist
+**/.next
+**/build

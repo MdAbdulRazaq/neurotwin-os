@@ -1,0 +1,1 @@
+from unittest import TestCase\nfrom services.backend.usage_tracker import check_memory_limit\nclass TestMemoryTrigger(TestCase):\n    def test_memory_limit(self):\n        assert check_memory_limit(123) == {"user_id": 123}

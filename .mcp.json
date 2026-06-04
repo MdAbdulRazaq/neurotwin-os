@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "cmd",
+      "args": ["/c", "npx", "@modelcontextprotocol/server-filesystem", "D:\\neurotwin"]
+    },
+    "postgres": {
+      "command": "cmd",
+      "args": ["/c", "npx", "@modelcontextprotocol/server-postgres", "postgresql://neurotwin:password@localhost:5432/neurotwin_db"]
+    },
+    "supabase": {
+      "url": "https://mcp.supabase.com/mcp?project_ref=xywuhwdijgxlfdgfktnn&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cbranching%2Cfunctions%2Cstorage"
+    }
+  }
+}

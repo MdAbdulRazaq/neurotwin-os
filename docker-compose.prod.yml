@@ -1,0 +1,28 @@
+services:
+  redis:
+    image: redis
+    networks:
+      - app-network
+  autonomy:
+    build: ./services/autonomy
+    ports:
+      - "8018:8018"
+    depends_on:
+      - redis
+    networks:
+      - app-network
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+  backend:
+    build: ./services/backend
+    ports:
+      - "8000:80"
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge

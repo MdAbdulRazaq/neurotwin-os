@@ -1,0 +1,1 @@
+from simulation_mgr import handle_simulation_request\n\ndef test_simulation_request():\n    assert handle_simulation_request(123) == {'user_id': 123}

@@ -1,0 +1,5 @@
+- [User Role](user_role.md) — CEO building NEUROTWIN AI companion platform
+- [Project Context](project_context.md) — NEUROTWIN OS platform details and status
+- [Live Credentials](reference_credentials.md) — Stack connection strings and API endpoints
+- [Engine Routing](reference_engines.md) — 8-core engine routing table
+- [Critical Rules](reference_critical_rules.md) — Essential operational constraints

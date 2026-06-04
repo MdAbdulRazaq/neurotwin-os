@@ -1,0 +1,1 @@
+from usage_tracker import check_memory_limit\n\ndef test_memory_limit():\n    assert check_memory_limit(123) == {'user_id': 123}

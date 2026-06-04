@@ -1,0 +1,23 @@
+CREATE CONSTRAINT digital_twin_id IF NOT EXISTS
+  FOR (n:DigitalTwin) REQUIRE n.twin_id IS UNIQUE;
+
+CREATE CONSTRAINT memory_node_id IF NOT EXISTS
+  FOR (n:MemoryNode) REQUIRE n.memory_id IS UNIQUE;
+
+CREATE CONSTRAINT agent_id IF NOT EXISTS
+  FOR (n:Agent) REQUIRE n.agent_id IS UNIQUE;
+
+CREATE CONSTRAINT event_trace_id IF NOT EXISTS
+  FOR (n:Event) REQUIRE n.trace_id IS UNIQUE;
+
+CREATE INDEX twin_user_id IF NOT EXISTS
+  FOR (n:DigitalTwin) ON (n.user_id);
+
+CREATE INDEX memory_type IF NOT EXISTS
+  FOR (n:MemoryNode) ON (n.memory_type);
+
+CREATE INDEX event_timestamp IF NOT EXISTS
+  FOR (n:Event) ON (n.timestamp);
+
+CREATE INDEX agent_status IF NOT EXISTS
+  FOR (n:Agent) ON (n.status);

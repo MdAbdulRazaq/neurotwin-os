@@ -1,0 +1,162 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  .pg{background:linear-gradient(160deg,#0b0917 0%,#0f0c1e 100%);min-height:600px;padding:36px 20px 48px;font-family:'DM Sans',sans-serif;position:relative;overflow:hidden;border-radius:12px}
+  .blob1{position:absolute;top:-60px;left:20%;width:340px;height:260px;border-radius:50%;background:rgba(109,40,217,0.10);filter:blur(60px);pointer-events:none}
+  .blob2{position:absolute;top:40%;right:10%;width:280px;height:220px;border-radius:50%;background:rgba(245,158,11,0.07);filter:blur(60px);pointer-events:none}
+  .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;border-radius:12px}
+  .hero{text-align:center;position:relative;margin-bottom:28px}
+  .label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#4a4566;margin-bottom:10px}
+  .h1{font-family:'Syne',sans-serif;font-weight:900;font-size:28px;line-height:1.2;color:#fff;margin-bottom:6px}
+  .h1 span{background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .sub{font-size:13px;color:#6b6580;max-width:340px;margin:0 auto;line-height:1.6}
+  .toggle{display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+  .tog-wrap{display:flex;gap:3px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:3px}
+  .tog-btn{padding:6px 16px;border-radius:7px;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;border:none;transition:all .2s}
+  .tog-btn.active{background:rgba(255,255,255,0.12);color:#fff}
+  .tog-btn:not(.active){background:transparent;color:#4a4566}
+  .save-badge{background:rgba(16,185,129,0.15);color:#34d399;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-left:6px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative}
+  .card{border-radius:14px;padding:20px;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .card-free{background:rgba(15,14,27,0.9);border:1px solid rgba(255,255,255,0.07)}
+  .card-pro{background:linear-gradient(155deg,rgba(109,40,217,0.20) 0%,rgba(15,14,27,0.97) 55%);border:1px solid rgba(139,92,246,0.38);box-shadow:0 0 50px -8px rgba(139,92,246,0.35)}
+  .card-ultra{background:linear-gradient(155deg,rgba(180,120,0,0.15) 0%,rgba(15,14,27,0.97) 55%);border:1px solid rgba(245,158,11,0.32);box-shadow:0 0 50px -8px rgba(245,158,11,0.28)}
+  .popular-ribbon{position:absolute;top:12px;right:-14px;background:#7c3aed;color:#fff;font-size:8px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;padding:3px 22px;transform:rotate(40deg);transform-origin:right top}
+  .badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-bottom:10px}
+  .badge-pro{background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.25)}
+  .badge-ultra{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.25)}
+  .plan-name{font-family:'Syne',sans-serif;font-weight:900;font-size:20px;color:#fff}
+  .plan-tag{font-size:11px;color:#4a4566;margin-top:2px;margin-bottom:14px}
+  .price{font-family:'Syne',sans-serif;font-weight:900;font-size:36px;color:#fff;line-height:1}
+  .price sup{font-size:16px;font-weight:700;vertical-align:top;margin-top:6px;display:inline-block}
+  .price-mo{font-size:11px;color:#4a4566;margin-left:3px}
+  .price-note{font-size:9px;color:#3a3556;margin-top:2px}
+  .cta{margin-top:16px;width:100%;padding:10px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;border:none}
+  .cta-free{background:rgba(255,255,255,0.05);color:#9d99b8;border:1px solid rgba(255,255,255,0.09)}
+  .cta-free:hover{background:rgba(255,255,255,0.09)}
+  .cta-pro{background:#7c3aed;color:#fff;box-shadow:0 6px 24px rgba(124,58,237,0.4)}
+  .cta-pro:hover{background:#6d28d9}
+  .cta-ultra{background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;font-weight:800;box-shadow:0 6px 24px rgba(245,158,11,0.38)}
+  .cta-ultra:hover{filter:brightness(1.08)}
+  .divider{margin:14px 0;border:none;border-top:1px solid rgba(255,255,255,0.06)}
+  .feat-list{display:flex;flex-direction:column;gap:8px;flex:1}
+  .feat{display:flex;align-items:center;gap:7px;font-size:11px;color:#6b6580}
+  .check-free{color:#3a3556}
+  .check-pro{color:#a78bfa}
+  .check-ultra{color:#fbbf24}
+  .table-wrap{margin-top:28px;position:relative}
+  .table-label{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#3a3556;text-align:center;margin-bottom:12px}
+  .comp-table{width:100%;border-collapse:collapse;background:rgba(10,9,20,0.8);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);font-family:'DM Sans',sans-serif;font-size:11px}
+  .comp-table th{padding:10px 8px;text-align:center;color:#fff;font-family:'Syne',sans-serif;font-size:12px;border-bottom:1px solid rgba(255,255,255,0.06)}
+  .comp-table th:first-child{text-align:left;padding-left:14px}
+  .comp-table td{padding:8px 8px;text-align:center;color:#6b6580;border-bottom:1px solid rgba(255,255,255,0.04)}
+  .comp-table td:first-child{text-align:left;padding-left:14px;color:#9d99b8}
+  .comp-table tr.hl td{background:rgba(255,255,255,0.015);font-weight:500}
+  .val-yes{color:#34d399}
+  .val-no{color:#2a2840}
+  .trust{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:22px;font-size:10px;color:#3a3556}
+  .trust-item{display:flex;align-items:center;gap:5px}
+  .trust-check{color:#166534}
+</style>
+<div class="pg">
+  <div class="grid-bg"></div>
+  <div class="blob1"></div>
+  <div class="blob2"></div>
+  <div class="hero">
+    <p class="label">Pricing</p>
+    <h1 class="h1">See your future decisions.<br><span>Unlock your full AI twin.</span></h1>
+    <p class="sub" style="margin-top:8px">Start free. Upgrade when you're ready to go deeper.</p>
+  </div>
+  <div class="toggle">
+    <div class="tog-wrap">
+      <button class="tog-btn" id="btn-mo" onclick="setBilling('monthly')">Monthly</button>
+      <button class="tog-btn active" id="btn-an" onclick="setBilling('annual')">Annual <span class="save-badge" id="save-badge">-34%</span></button>
+    </div>
+  </div>
+  <div class="cards">
+    <div class="card card-free">
+      <div class="plan-name">Free</div>
+      <div class="plan-tag">Start your journey</div>
+      <div class="price">Free</div>
+      <div class="price-note">Always free</div>
+      <button class="cta cta-free">Get Started</button>
+      <hr class="divider">
+      <div class="feat-list">
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-free"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>50 AI queries / month</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-free"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>7-day memory</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-free"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>1 persona</div>
+        <div class="feat" style="color:#2a2840"><svg width="11" height="11" viewBox="0 0 12 2" fill="none"><path d="M1 1h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>No forecasting</div>
+        <div class="feat" style="color:#2a2840"><svg width="11" height="11" viewBox="0 0 12 2" fill="none"><path d="M1 1h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>No simulations</div>
+      </div>
+    </div>
+    <div class="card card-pro" style="position:relative;overflow:hidden">
+      <div class="popular-ribbon">Popular</div>
+      <span class="badge badge-pro">Most Popular</span>
+      <div class="plan-name">Pro</div>
+      <div class="plan-tag">For serious builders</div>
+      <div class="price" id="price-pro"><sup>$</sup><span id="pv-pro">19</span><span class="price-mo">/mo</span></div>
+      <div class="price-note" id="pn-pro">Billed annually</div>
+      <button class="cta cta-pro">Unlock Pro</button>
+      <hr class="divider">
+      <div class="feat-list">
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-pro"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>2,000 queries / month</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-pro"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>90-day memory</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-pro"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Decision forecasting</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-pro"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>3 simulations / month</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-pro"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>5 custom personas</div>
+      </div>
+    </div>
+    <div class="card card-ultra">
+      <span class="badge badge-ultra">Best Value</span>
+      <div class="plan-name">Ultra</div>
+      <div class="plan-tag">Unlimited intelligence</div>
+      <div class="price"><sup>$</sup><span id="pv-ultra">59</span><span class="price-mo">/mo</span></div>
+      <div class="price-note" id="pn-ultra">Billed annually</div>
+      <button class="cta cta-ultra">Go Ultra</button>
+      <hr class="divider">
+      <div class="feat-list">
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-ultra"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Unlimited queries</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-ultra"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Permanent memory</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-ultra"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Unlimited simulations</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-ultra"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Scenario branching</div>
+        <div class="feat"><svg width="11" height="11" viewBox="0 0 12 10" fill="none" class="check-ultra"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Dedicated support</div>
+      </div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <p class="table-label">Full comparison</p>
+    <table class="comp-table">
+      <thead><tr><th></th><th>Free</th><th style="color:#a78bfa">Pro</th><th style="color:#fbbf24">Ultra</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>AI queries / month</td><td>50</td><td>2,000</td><td>Unlimited</td></tr>
+        <tr class="hl"><td>AI twin memory</td><td>7 days</td><td>90 days</td><td>Forever</td></tr>
+        <tr class="hl"><td>Decision forecasting</td><td class="val-no">—</td><td class="val-yes">✓</td><td class="val-yes">✓</td></tr>
+        <tr class="hl"><td>Future-self simulations</td><td class="val-no">—</td><td>3 / month</td><td>Unlimited</td></tr>
+        <tr><td>Scenario branching</td><td class="val-no">—</td><td class="val-no">—</td><td class="val-yes">✓</td></tr>
+        <tr><td>API access</td><td class="val-no">—</td><td>10k calls/mo</td><td>Unlimited</td></tr>
+        <tr><td>Custom personas</td><td>1</td><td>5</td><td>Unlimited</td></tr>
+        <tr><td>Dedicated support</td><td class="val-no">—</td><td class="val-no">—</td><td class="val-yes">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="trust">
+    <span class="trust-item"><svg width="10" height="10" viewBox="0 0 12 10" fill="none" class="trust-check"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>No credit card for Free</span>
+    <span class="trust-item"><svg width="10" height="10" viewBox="0 0 12 10" fill="none" class="trust-check"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Cancel anytime</span>
+    <span class="trust-item"><svg width="10" height="10" viewBox="0 0 12 10" fill="none" class="trust-check"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>SOC 2 Type II</span>
+    <span class="trust-item"><svg width="10" height="10" viewBox="0 0 12 10" fill="none" class="trust-check"><path d="M1 5l3 3.5L11 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>256-bit encryption</span>
+  </div>
+</div>
+<script>
+const prices={monthly:{pro:29,ultra:79},annual:{pro:19,ultra:59}};
+let current='annual';
+function setBilling(b){
+  current=b;
+  document.getElementById('btn-mo').className='tog-btn'+(b==='monthly'?' active':'');
+  document.getElementById('btn-an').className='tog-btn'+(b==='annual'?' active':'');
+  document.getElementById('pv-pro').textContent=prices[b].pro;
+  document.getElementById('pv-ultra').textContent=prices[b].ultra;
+  document.getElementById('pn-pro').textContent=b==='annual'?'Billed annually':'Per month';
+  document.getElementById('pn-ultra').textContent=b==='annual'?'Billed annually':'Per month';
+}
+</script>

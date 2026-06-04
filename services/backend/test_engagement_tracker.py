@@ -1,0 +1,1 @@
+from engagement_tracker import update_engagement_stats\n\ndef test_update_engagement_stats():\n    assert update_engagement_stats(123) == {'user_id': 123}

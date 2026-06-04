@@ -1,0 +1,237 @@
+name: NEUROTWIN OS — CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/neurotwin
+
+jobs:
+  # ── Lint & Type Check ──────────────────────────────────────────────────────
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Python deps
+        run: |
+          pip install ruff mypy
+          pip install -r services/api/requirements.txt
+
+      - name: Ruff lint
+        run: ruff check services/
+
+      - name: Mypy type check
+        run: mypy services/api/app --ignore-missing-imports
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install Node deps
+        run: cd web && npm ci
+
+      - name: ESLint
+        run: cd web && npm run lint
+
+      - name: TypeScript check
+        run: cd web && npm run type-check
+
+  # ── Unit Tests ─────────────────────────────────────────────────────────────
+  test-backend:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: neurotwin
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: neurotwin_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r services/api/requirements.txt pytest pytest-asyncio pytest-cov httpx
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql+asyncpg://neurotwin:password@localhost:5432/neurotwin_test
+          REDIS_URL: redis://localhost:6379/0
+          SECRET_KEY: test-secret-key-for-ci
+          DEBUG: "true"
+        run: |
+          cd services/api
+          pytest tests/ -v --cov=app --cov-report=xml --cov-report=term-missing
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: services/api/coverage.xml
+          flags: backend
+
+  # ── Frontend Tests ─────────────────────────────────────────────────────────
+  test-frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+
+      - run: cd web && npm ci
+      - run: cd web && npm run build
+
+  # ── Security Scan ──────────────────────────────────────────────────────────
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '1'
+
+  # ── Build & Push Images ────────────────────────────────────────────────────
+  build:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+    needs: [test-backend, test-frontend, security]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      matrix:
+        service: [api, perception, memory, avatar, worker, web]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_PREFIX }}-${{ matrix.service }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=sha-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.service == 'web' && './web' || format('./services/{0}', matrix.service) }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ── Deploy to Staging ──────────────────────────────────────────────────────
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: echo "${{ secrets.KUBECONFIG_STAGING }}" | base64 -d > ~/.kube/config
+
+      - name: Deploy to staging namespace
+        run: |
+          kubectl set image deployment/neurotwin-api api=${{ env.IMAGE_PREFIX }}-api:sha-${{ github.sha }} -n neurotwin-staging
+          kubectl set image deployment/neurotwin-web web=${{ env.IMAGE_PREFIX }}-web:sha-${{ github.sha }} -n neurotwin-staging
+          kubectl rollout status deployment/neurotwin-api -n neurotwin-staging --timeout=5m
+          kubectl rollout status deployment/neurotwin-web -n neurotwin-staging --timeout=5m
+
+  # ── Deploy to Production ───────────────────────────────────────────────────
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: echo "${{ secrets.KUBECONFIG_PROD }}" | base64 -d > ~/.kube/config
+
+      - name: Deploy to production
+        run: |
+          kubectl set image deployment/neurotwin-api api=${{ env.IMAGE_PREFIX }}-api:latest -n neurotwin
+          kubectl set image deployment/neurotwin-web web=${{ env.IMAGE_PREFIX }}-web:latest -n neurotwin
+          kubectl rollout status deployment/neurotwin-api -n neurotwin --timeout=10m
+          kubectl rollout status deployment/neurotwin-web -n neurotwin --timeout=10m
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "✅ Production deployment succeeded for commit ${{ github.sha }}"
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          kubectl rollout undo deployment/neurotwin-api -n neurotwin
+          kubectl rollout undo deployment/neurotwin-web -n neurotwin
+          echo "⚠️ Rollback triggered for commit ${{ github.sha }}"

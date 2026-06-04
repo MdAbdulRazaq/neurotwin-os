@@ -1,0 +1,309 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:1.5rem 0}
+.section-title{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-tertiary);margin:0 0 10px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px}
+.card-sm{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 14px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px}
+.badge-ok{background:var(--color-background-success);color:var(--color-text-success);border:0.5px solid var(--color-border-success)}
+.badge-err{background:var(--color-background-danger);color:var(--color-text-danger);border:0.5px solid var(--color-border-danger)}
+.badge-new{background:var(--color-background-info);color:var(--color-text-info);border:0.5px solid var(--color-border-info)}
+.badge-warn{background:var(--color-background-warning);color:var(--color-text-warning);border:0.5px solid var(--color-border-warning)}
+.row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.row:last-child{border-bottom:none}
+.row-label{font-size:13px;color:var(--color-text-secondary);flex:1;min-width:0}
+.row-val{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-ok{background:#22c55e}
+.dot-err{background:#ef4444}
+.dot-new{background:#3b82f6}
+.flow-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;text-align:center;min-width:80px}
+.flow-box b{display:block;font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.flow-box span{color:var(--color-text-tertiary)}
+.flow-box.ok{border-color:var(--color-border-success);background:var(--color-background-success)}
+.flow-box.ok b{color:var(--color-text-success)}
+.flow-box.err{border-color:var(--color-border-danger);background:var(--color-background-danger)}
+.flow-box.err b{color:var(--color-text-danger)}
+.flow-box.new{border-color:var(--color-border-info);background:var(--color-background-info)}
+.flow-box.new b{color:var(--color-text-info)}
+.arr{display:flex;align-items:center;color:var(--color-text-tertiary);font-size:16px;flex-shrink:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mono{font-family:var(--font-mono);font-size:11px;color:var(--color-text-secondary)}
+.phase-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.phase-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.phase-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.cmd{font-family:var(--font-mono);font-size:11px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:6px;padding:10px 14px;color:var(--color-text-secondary);line-height:1.7;margin-top:8px}
+.cmd .c-ok{color:#22c55e}
+.cmd .c-dim{color:var(--color-text-tertiary)}
+.tab-row{display:flex;gap:4px;margin-bottom:14px}
+.tab{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);background:transparent;transition:all .15s}
+.tab.active{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-primary)}
+.panel{display:none}
+.panel.active{display:block}
+.file-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.file-row:last-child{border-bottom:none}
+.file-icon{width:28px;height:28px;border-radius:6px;background:var(--color-background-info);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--color-text-info);flex-shrink:0}
+.file-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.file-path{font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono)}
+.hint{font-size:12px;color:var(--color-text-tertiary);line-height:1.6;margin-top:6px}
+</style>
+
+<div class="wrap">
+
+<!-- ── ROOT CAUSE ──────────────────────────────────────────── -->
+<div class="section-title">Root cause — what was broken</div>
+<div class="card" style="border-color:var(--color-border-danger)">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+    <span class="badge badge-err">Critical crash</span>
+    <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">neurotwin-prediction</span>
+  </div>
+  <div class="mono" style="background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:6px;padding:10px 14px;line-height:1.8">
+    ERROR: Error loading ASGI app. Attribute "app" not found in module "app.main"<br>
+    → Uvicorn could not find <span style="color:var(--color-text-primary);font-weight:500">app = FastAPI()</span> in services/prediction/app/main.py<br>
+    → Container restart-looping every ~30 seconds<br>
+    → neurotwin:suggestions channel was <span style="color:#ef4444;font-weight:500">never published</span>
+  </div>
+  <div class="hint" style="margin-top:10px">The prediction service had missing or incorrectly named <span style="font-family:var(--font-mono)">app</span> variable. Uvicorn's entrypoint <span style="font-family:var(--font-mono)">app.main:app</span> expects exactly <span style="font-family:var(--font-mono)">app = FastAPI()</span> at module level — nothing else works.</div>
+</div>
+
+<!-- ── TAB NAV ──────────────────────────────────────────────── -->
+<div class="tab-row">
+  <button class="tab active" onclick="showTab('flow')">Data flow</button>
+  <button class="tab" onclick="showTab('files')">Files deployed</button>
+  <button class="tab" onclick="showTab('phases')">All phases</button>
+  <button class="tab" onclick="showTab('deploy')">Deploy steps</button>
+</div>
+
+<!-- ──────────────── TAB: DATA FLOW ─────────────────────────── -->
+<div id="tab-flow" class="panel active">
+  <div class="section-title">Full system data flow — after fix</div>
+
+  <!-- Layer 1: User input -->
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+    <div class="flow-box ok"><b>User</b><span>Browser / voice</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box ok"><b>Orchestrator</b><span>:8010</span></div>
+    <div class="arr">→</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div class="flow-box ok"><b>Memory Agent</b><span>Redis TTL 1h</span></div>
+      <div class="flow-box ok"><b>Emotion Agent</b><span>neurotwin:emotion</span></div>
+      <div class="flow-box ok"><b>Persona Agent</b><span>Neo4j writes</span></div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;margin:10px 0">
+    <div class="flow-box ok" style="min-width:120px"><b>neurotwin:behavior</b><span>published</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box new" style="min-width:120px"><b>PredictionAgent</b><span>:8009 — FIXED</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box new"><b>neurotwin:suggestions</b><span>every 4s</span></div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0">
+    <div class="flow-box ok"><b>neurotwin:emotion</b><span>published</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box ok"><b>Avatar listener</b><span>blendshapes</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box ok"><b>neurotwin:avatar_state</b><span>published</span></div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0">
+    <div class="flow-box new"><b>neurotwin:suggestions</b><span>sub</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box new"><b>Orchestrator bridge</b><span>suggestions.py</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box new"><b>/ws/suggestions</b><span>WebSocket</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box new"><b>SuggestionCard</b><span>Frontend UI</span></div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 0">
+    <div class="flow-box new"><b>Accept/Reject</b><span>user feedback</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box new"><b>POST /feedback</b><span>prediction:8009</span></div>
+    <div class="arr">→</div>
+    <div class="flow-box new"><b>Redis HSET</b><span>confidence ±0.1</span></div>
+  </div>
+
+  <!-- Redis channels summary -->
+  <div class="section-title" style="margin-top:18px">Active redis pub/sub channels — after fix</div>
+  <div class="grid2">
+    <div class="card-sm">
+      <div class="row"><div class="dot dot-ok"></div><div class="row-label">neurotwin:emotion</div><span class="badge badge-ok">was active</span></div>
+      <div class="row"><div class="dot dot-ok"></div><div class="row-label">neurotwin:behavior</div><span class="badge badge-ok">was active</span></div>
+      <div class="row"><div class="dot dot-ok"></div><div class="row-label">neurotwin:avatar_state</div><span class="badge badge-ok">was active</span></div>
+      <div class="row"><div class="dot dot-ok"></div><div class="row-label">neurotwin:conversations</div><span class="badge badge-ok">was active</span></div>
+    </div>
+    <div class="card-sm">
+      <div class="row"><div class="dot dot-new"></div><div class="row-label">neurotwin:suggestions</div><span class="badge badge-new">now fixed</span></div>
+      <div class="row"><div class="dot dot-new"></div><div class="row-label">neurotwin:context</div><span class="badge badge-new">new — added</span></div>
+      <div class="row"><div class="dot dot-new"></div><div class="row-label">neurotwin:interrupt</div><span class="badge badge-new">new — added</span></div>
+      <div class="row"><div class="dot dot-ok"></div><div class="row-label">neurotwin:voice</div><span class="badge badge-ok">was active</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────── TAB: FILES ──────────────────────────────── -->
+<div id="tab-files" class="panel">
+  <div class="section-title">6 files deployed — copy to exact paths shown</div>
+  <div class="card">
+    <div class="file-row">
+      <div class="file-icon">PY</div>
+      <div style="flex:1;min-width:0">
+        <div class="file-name">main.py</div>
+        <div class="file-path">services/prediction/app/main.py</div>
+      </div>
+      <span class="badge badge-err" style="flex-shrink:0">fixes crash</span>
+    </div>
+    <div class="file-row">
+      <div class="file-icon">PY</div>
+      <div style="flex:1;min-width:0">
+        <div class="file-name">suggestions.py</div>
+        <div class="file-path">services/orchestrator/app/suggestions.py</div>
+      </div>
+      <span class="badge badge-new" style="flex-shrink:0">WebSocket P5–P6</span>
+    </div>
+    <div class="file-row">
+      <div class="file-icon">PY</div>
+      <div style="flex:1;min-width:0">
+        <div class="file-name">context_agent.py</div>
+        <div class="file-path">services/orchestrator/app/context_agent.py</div>
+      </div>
+      <span class="badge badge-new" style="flex-shrink:0">P10 context</span>
+    </div>
+    <div class="file-row">
+      <div class="file-icon">PY</div>
+      <div style="flex:1;min-width:0">
+        <div class="file-name">planner_agent.py</div>
+        <div class="file-path">services/orchestrator/app/planner_agent.py</div>
+      </div>
+      <span class="badge badge-new" style="flex-shrink:0">P11–P12 planner</span>
+    </div>
+    <div class="file-row">
+      <div class="file-icon">TSX</div>
+      <div style="flex:1;min-width:0">
+        <div class="file-name">SuggestionCard.tsx</div>
+        <div class="file-path">frontend/src/components/SuggestionCard.tsx</div>
+      </div>
+      <span class="badge badge-new" style="flex-shrink:0">P7 UI</span>
+    </div>
+    <div class="file-row">
+      <div class="file-icon">SH</div>
+      <div style="flex:1;min-width:0">
+        <div class="file-name">verify.sh</div>
+        <div class="file-path">project root — run after deploy</div>
+      </div>
+      <span class="badge badge-warn" style="flex-shrink:0">verification</span>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:4px">Wire into orchestrator main.py (3 lines)</div>
+  <div class="cmd">
+    <span class="c-dim">from</span> app.suggestions   <span class="c-dim">import</span> router <span class="c-dim">as</span> sug_router, suggestions_broadcaster<br>
+    <span class="c-dim">from</span> app.context_agent <span class="c-dim">import</span> router <span class="c-dim">as</span> ctx_router, context_loop<br>
+    <span class="c-dim">from</span> app.planner_agent <span class="c-dim">import</span> router <span class="c-dim">as</span> plan_router<br><br>
+    app.include_router(sug_router)<br>
+    app.include_router(ctx_router)<br>
+    app.include_router(plan_router)<br><br>
+    <span class="c-dim"># inside @app.on_event("startup"):</span><br>
+    asyncio.create_task(suggestions_broadcaster())<br>
+    asyncio.create_task(context_loop())
+  </div>
+</div>
+
+<!-- ──────────────── TAB: PHASES ──────────────────────────────── -->
+<div id="tab-phases" class="panel">
+  <div class="section-title">All 6 phases — status</div>
+  <div class="card-sm" style="margin-bottom:8px">
+    <div class="phase-header"><div class="phase-dot" style="background:#ef4444"></div><div class="phase-title">Phase 1 — Fix PredictionAgent</div><span class="badge badge-new" style="margin-left:auto">done</span></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P1 — app = FastAPI() added, module path fixed</div></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P2 — Redis conn loop + 4s publish loop</div></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P3 — GET /health with redis + emotion status</div></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P4 — neurotwin:suggestions will appear in PUBSUB CHANNELS</div></div>
+  </div>
+  <div class="card-sm" style="margin-bottom:8px">
+    <div class="phase-header"><div class="phase-dot" style="background:#f97316"></div><div class="phase-title">Phase 2 — Proactive loop activation</div><span class="badge badge-new" style="margin-left:auto">done</span></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P5 — Orchestrator subscribes neurotwin:suggestions</div></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P6 — /ws/suggestions WebSocket endpoint live</div></div>
+  </div>
+  <div class="card-sm" style="margin-bottom:8px">
+    <div class="phase-header"><div class="phase-dot" style="background:#eab308"></div><div class="phase-title">Phase 3 — Frontend UX</div><span class="badge badge-new" style="margin-left:auto">done</span></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P7 — SuggestionCard.tsx with accept/reject + confidence bar</div></div>
+  </div>
+  <div class="card-sm" style="margin-bottom:8px">
+    <div class="phase-header"><div class="phase-dot" style="background:#3b82f6"></div><div class="phase-title">Phase 4 — Learning loop</div><span class="badge badge-new" style="margin-left:auto">done</span></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P8 — POST /feedback stores accept/reject in Redis HSET</div></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P9 — confidence ±0.1 per feedback, clamped ±0.5</div></div>
+  </div>
+  <div class="card-sm" style="margin-bottom:8px">
+    <div class="phase-header"><div class="phase-dot" style="background:#8b5cf6"></div><div class="phase-title">Phase 5 — Context engine</div><span class="badge badge-new" style="margin-left:auto">done</span></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P10 — ContextAgent: time-of-day, session_duration, activity_level</div></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">Publishes neurotwin:context every 30s</div></div>
+  </div>
+  <div class="card-sm">
+    <div class="phase-header"><div class="phase-dot" style="background:#1f2937"></div><div class="phase-title">Phase 6 — Elite Pro</div><span class="badge badge-new" style="margin-left:auto">done</span></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P11 — PlannerAgent: goal decomposition → POST /planner/start</div></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">P12 — InterruptSystem: stop/pause/cancel → cancels plans + speech</div></div>
+    <div class="row"><div class="dot dot-new"></div><div class="row-label">Publishes neurotwin:interrupt on interruption</div></div>
+  </div>
+</div>
+
+<!-- ──────────────── TAB: DEPLOY ─────────────────────────────── -->
+<div id="tab-deploy" class="panel">
+  <div class="section-title">Exact commands — run in order</div>
+
+  <div class="card-sm" style="margin-bottom:10px">
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--color-text-primary)">Step 1 — copy files</div>
+    <div class="cmd">
+      cp prediction/main.py        D:/project/services/prediction/app/main.py<br>
+      cp suggestions.py            D:/project/services/orchestrator/app/<br>
+      cp context_agent.py          D:/project/services/orchestrator/app/<br>
+      cp planner_agent.py          D:/project/services/orchestrator/app/<br>
+      cp SuggestionCard.tsx        D:/project/frontend/src/components/
+    </div>
+  </div>
+
+  <div class="card-sm" style="margin-bottom:10px">
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--color-text-primary)">Step 2 — rebuild containers</div>
+    <div class="cmd">
+      docker compose build prediction orchestrator<br>
+      docker compose up -d prediction orchestrator
+    </div>
+  </div>
+
+  <div class="card-sm" style="margin-bottom:10px">
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--color-text-primary)">Step 3 — verify</div>
+    <div class="cmd">
+      docker logs neurotwin-prediction --tail 20<br>
+      <span class="c-dim"># expect: "prediction_loop: Redis connected ✓"</span><br>
+      <span class="c-dim"># expect: "published → … (conf=X.XX)"</span><br><br>
+      docker exec neurotwin-redis redis-cli PUBSUB CHANNELS<br>
+      <span class="c-dim"># must include: neurotwin:suggestions</span><br><br>
+      bash verify.sh
+      <span class="c-dim">  # full health + channel check</span>
+    </div>
+  </div>
+
+  <div class="card-sm">
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--color-text-primary)">Expected container status after fix</div>
+    <div class="row"><div class="dot dot-ok"></div><div class="row-label mono">neurotwin-prediction</div><span class="badge badge-ok">Up (healthy)</span></div>
+    <div class="row"><div class="dot dot-ok"></div><div class="row-label mono">neurotwin-orchestrator</div><span class="badge badge-ok">Up (healthy)</span></div>
+    <div class="row"><div class="dot dot-ok"></div><div class="row-label mono">neurotwin-redis</div><span class="badge badge-ok">Up (healthy)</span></div>
+    <div class="row"><div class="dot dot-ok"></div><div class="row-label mono">neurotwin-avatar</div><span class="badge badge-ok">Up (healthy)</span></div>
+    <div class="row"><div class="dot dot-ok"></div><div class="row-label mono">neurotwin-agents</div><span class="badge badge-ok">Up</span></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>

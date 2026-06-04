@@ -1,0 +1,1 @@
+def get_conversion_message(trigger_type):\n    messages = {\n        'memory_limit': 'You’ve unlocked 82% of your AI potential',\n        'simulation_usage': 'Your digital twin is evolving — unlock full power',\n        'high_engagement': 'Upgrade to continue this level of intelligence'\n    }\n    return messages.get(trigger_type, 'Upgrade to unlock full features')
